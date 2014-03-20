@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:paddingLeft="15dp"
+             android:paddingRight="15dp"
+             android:background="@android:color/transparent">
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/note_background">
+
+        <Button
+                android:id="@+id/button_slider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/slide_background"/>
+
+        <TextView
+                android:id="@+id/text_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"/>
+
+        <com.notes.controls.CustomEditText
+                android:id="@+id/edit_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/button_slider"
+                android:layout_above="@id/text_index"
+                android:layout_marginLeft="@dimen/note_data_side_margin"
+                android:layout_marginRight="@dimen/note_data_side_margin"
+                android:hint="@string/add_note"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"
+                android:background="@null"/>
+    </RelativeLayout>
+</FrameLayout>
