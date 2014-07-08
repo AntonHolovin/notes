@@ -18,7 +18,7 @@ import com.golovin.notes.model.NoteModel;
 public class NoteFragment extends Fragment {
 
     public static final String NOTE_MODEL = "noteModel";
-    public static final String NUMBER = "index";
+    public static final String INDEX = "index";
 
     private NoteModel mNoteModel;
 
@@ -36,7 +36,7 @@ public class NoteFragment extends Fragment {
         Bundle arguments = getArguments();
 
         mNoteModel = (NoteModel) arguments.getSerializable(NOTE_MODEL);
-        mNumber = arguments.getInt(NUMBER);
+        mNumber = arguments.getInt(INDEX);
     }
 
     @Override
@@ -56,6 +56,9 @@ public class NoteFragment extends Fragment {
         contentEditText.setText(mNoteModel.getContent());
 
         contentEditText.addTextChangedListener(new TextWatcher() {
+
+            boolean mTextEmpty = true;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
                 // nop
@@ -71,14 +74,23 @@ public class NoteFragment extends Fragment {
                 String text = editable.toString();
 
                 if (text.isEmpty()) {
+                    mTextEmpty = true;
+
                     EventManager eventManager = NotesApplication.getInstance().getEventManager();
 
-                    eventManager.fireEvent(Event.TEXT_REMOVED);
+                    eventManager.fireEvent(new Event(Event.EventType.TEXT_REMOVED));
 
-                } else if (text.length() == 1) {
+                } else if (mTextEmpty) {
+                    mTextEmpty = false;
+
                     EventManager eventManager = NotesApplication.getInstance().getEventManager();
 
-                    eventManager.fireEvent(Event.TEXT_ENTERED);
+                    Event event = new Event(Event.EventType.TEXT_ENTERED);
+                    event.putParam(Event.ACTION_KEY, mNumber);
+
+                    eventManager.fireEvent(event);
+
+                    contentEditText.requestFocus();
                 }
             }
         });
@@ -87,7 +99,7 @@ public class NoteFragment extends Fragment {
     private void initIndex(View view) {
         TextView numberTextView = (TextView) view.findViewById(R.id.text_index);
 
-        numberTextView.setText(String.valueOf(mNumber));
+        numberTextView.setText(String.valueOf(mNumber + 1));
     }
 
     private void initSlider(View view) {

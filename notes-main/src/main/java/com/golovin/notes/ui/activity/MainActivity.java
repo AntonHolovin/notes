@@ -13,6 +13,7 @@ import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
+import com.golovin.notes.log.Logger;
 import com.golovin.notes.model.NoteModel;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
@@ -34,6 +35,8 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
     private void initNotesViewPager() {
         mViewPager = (ViewPager) findViewById(R.id.viewpager_notes);
+
+        mViewPager.setOffscreenPageLimit(2);
 
         initViewPagerAppearance();
         initViewPagerAdapter();
@@ -139,5 +142,23 @@ public class MainActivity extends FragmentActivity implements EventHandler {
     @Override
     public void handlerEvent(Event event) {
 
+        switch (event.getEventType()) {
+            case TEXT_ENTERED:
+                NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
+
+                int noteIndex = (Integer) event.getParam(Event.ACTION_KEY);
+
+                if (noteIndex == adapter.getSize() - 1) {
+                    adapter.addNote(new NoteModel());
+                    adapter.notifyDataSetChanged();
+                }
+
+                break;
+
+            case TEXT_REMOVED:
+
+                Logger.logDebug(MainActivity.class, "Text removed");
+                break;
+        }
     }
 }

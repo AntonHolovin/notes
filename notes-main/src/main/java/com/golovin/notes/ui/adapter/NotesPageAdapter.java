@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
-import com.golovin.notes.ui.fragment.NoteFragment;
 import com.golovin.notes.model.NoteModel;
+import com.golovin.notes.ui.fragment.NoteFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,14 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    public void addNote(NoteModel noteModel) {
+        mNoteModels.add(noteModel);
+    }
+
+    public int getSize() {
+        return mNoteModels.size();
+    }
+
     @Override
     public int getItemPosition(Object object) {
         return PagerAdapter.POSITION_NONE;
@@ -52,7 +60,7 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         Bundle bundle = new Bundle();
 
         bundle.putSerializable(NoteFragment.NOTE_MODEL, noteModel);
-        bundle.putInt(NoteFragment.NUMBER, index + 1);
+        bundle.putInt(NoteFragment.INDEX, index);
 
         NoteFragment noteFragment = (NoteFragment) Fragment.instantiate(mContext, NoteFragment.class.getCanonicalName(),
                 bundle);
