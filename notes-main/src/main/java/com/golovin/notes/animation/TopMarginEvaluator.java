@@ -1,4 +1,4 @@
-package com.notes.animation;
+package com.golovin.notes.animation;
 
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,6 +14,7 @@ public class TopMarginEvaluator extends IntEvaluator {
 
     @Override
     public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
         params.topMargin = super.evaluate(fraction, startValue, endValue);
         mView.setLayoutParams(params);

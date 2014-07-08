@@ -24,7 +24,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"/>
 
-        <com.notes.controls.CustomEditText
+        <EditText
                 android:id="@+id/edit_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

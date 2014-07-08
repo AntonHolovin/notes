@@ -1,8 +1,8 @@
-package com.notes.utils;
+package com.golovin.notes.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import com.notes.R;
+import com.golovin.notes.R;
 
 public class ShareUtils {
     public static void byEmail(Context context, String text) {
