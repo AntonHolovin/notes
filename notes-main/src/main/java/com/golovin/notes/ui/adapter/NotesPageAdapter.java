@@ -1,4 +1,4 @@
-package com.golovin.notes.adapters;
+package com.golovin.notes.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
-import com.golovin.notes.fragments.NoteFragment;
-import com.golovin.notes.models.NoteModel;
+import com.golovin.notes.ui.fragment.NoteFragment;
+import com.golovin.notes.model.NoteModel;
 
 import java.util.ArrayList;
 import java.util.List;

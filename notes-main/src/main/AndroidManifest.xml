@@ -4,10 +4,10 @@
 
     <application android:label="@string/app_name"
                  android:theme="@style/AppTheme"
-                 android:name=".application.NotesApplication"
+                 android:name=".controller.NotesApplication"
                  android:icon="@drawable/ic_launcher">
 
-        <activity android:name=".activities.MainActivity"
+        <activity android:name=".ui.activity.MainActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="adjustPan">

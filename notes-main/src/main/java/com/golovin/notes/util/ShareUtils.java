@@ -1,4 +1,4 @@
-package com.golovin.notes.utils;
+package com.golovin.notes.util;
 
 import android.content.Context;
 import android.content.Intent;

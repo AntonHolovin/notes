@@ -1,4 +1,4 @@
-package com.golovin.notes.models;
+package com.golovin.notes.model;
 
 import com.golovin.notes.data.Note;
 

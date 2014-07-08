@@ -1,4 +1,4 @@
-package com.golovin.notes.animation;
+package com.golovin.notes.ui.animation;
 
 import android.view.View;
 import android.widget.RelativeLayout;

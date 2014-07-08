@@ -1,4 +1,4 @@
-package com.golovin.notes.fragments;
+package com.golovin.notes.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.golovin.notes.R;
-import com.golovin.notes.models.NoteModel;
+import com.golovin.notes.model.NoteModel;
 
 public class NoteFragment extends Fragment {
 

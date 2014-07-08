@@ -1,4 +1,4 @@
-package com.golovin.notes.activities;
+package com.golovin.notes.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 import com.golovin.notes.R;
-import com.golovin.notes.adapters.NotesPageAdapter;
-import com.golovin.notes.animation.TopMarginEvaluator;
-import com.golovin.notes.application.NotesApplication;
-import com.golovin.notes.data.NotesDataSource;
-import com.golovin.notes.models.NoteModel;
+import com.golovin.notes.controller.DataSourceManager;
+import com.golovin.notes.controller.NotesApplication;
+import com.golovin.notes.model.NoteModel;
+import com.golovin.notes.ui.adapter.NotesPageAdapter;
+import com.golovin.notes.ui.animation.TopMarginEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity {
     private void initNotesViewPager() {
         mViewPager = (ViewPager) findViewById(R.id.viewpager_notes);
 
-//        initViewPagerAppearance();
+        initViewPagerAppearance();
         initViewPagerAdapter();
     }
 
@@ -105,9 +105,9 @@ public class MainActivity extends FragmentActivity {
     private void initViewPagerAdapter() {
         NotesApplication notesApplication = NotesApplication.getInstance();
 
-        NotesDataSource notesDataSource = notesApplication.getNotesDataSource();
+        DataSourceManager sourceManager = notesApplication.getDataSourceManager();
 
-        List<NoteModel> noteModels = notesDataSource.getNoteModels();
+        List<NoteModel> noteModels = sourceManager.getNoteModels();
 
         View.OnTouchListener onTouchListener = buildSliderTouchListener();
 
