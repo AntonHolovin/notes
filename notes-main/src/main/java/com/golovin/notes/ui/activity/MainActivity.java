@@ -9,7 +9,10 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 import com.golovin.notes.R;
 import com.golovin.notes.controller.DataSourceManager;
+import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
+import com.golovin.notes.event.Event;
+import com.golovin.notes.event.EventHandler;
 import com.golovin.notes.model.NoteModel;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
@@ -17,7 +20,7 @@ import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.List;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements EventHandler {
 
     private ViewPager mViewPager;
 
@@ -34,6 +37,22 @@ public class MainActivity extends FragmentActivity {
 
         initViewPagerAppearance();
         initViewPagerAdapter();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        EventManager eventManager = NotesApplication.getInstance().getEventManager();
+        eventManager.addHandler(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        EventManager eventManager = NotesApplication.getInstance().getEventManager();
+        eventManager.removeHandler(this);
     }
 
     private View.OnTouchListener buildSliderTouchListener() {
@@ -104,7 +123,6 @@ public class MainActivity extends FragmentActivity {
 
     private void initViewPagerAdapter() {
         NotesApplication notesApplication = NotesApplication.getInstance();
-
         DataSourceManager sourceManager = notesApplication.getDataSourceManager();
 
         List<NoteModel> noteModels = sourceManager.getNoteModels();
@@ -115,7 +133,11 @@ public class MainActivity extends FragmentActivity {
                 onTouchListener);
 
         mViewPager.setAdapter(pageAdapter);
-
         pageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void handlerEvent(Event event) {
+
     }
 }

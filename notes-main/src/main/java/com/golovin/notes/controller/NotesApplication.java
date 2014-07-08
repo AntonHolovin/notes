@@ -17,6 +17,10 @@ public class NotesApplication extends Application {
         return DataSourceManager.getInstance(this);
     }
 
+    public EventManager getEventManager() {
+        return EventManager.getInstance();
+    }
+
     public static NotesApplication getInstance() {
         return sInstance;
     }
