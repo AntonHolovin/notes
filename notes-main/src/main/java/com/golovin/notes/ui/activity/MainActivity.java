@@ -11,10 +11,10 @@ import com.golovin.notes.R;
 import com.golovin.notes.controller.DataSourceManager;
 import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
+import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
 import com.golovin.notes.log.Logger;
-import com.golovin.notes.model.NoteModel;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
@@ -37,6 +37,30 @@ public class MainActivity extends FragmentActivity implements EventHandler {
         mViewPager = (ViewPager) findViewById(R.id.viewpager_notes);
 
         mViewPager.setOffscreenPageLimit(2);
+
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+            int mCurrentIndex = 0;
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Logger.logDebug(MainActivity.class, String.format("onPageScrollStateChanged. State: %d", state));
+
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+
+                        NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
+                        Note note = adapter.getNoteModel(mCurrentIndex);
+
+                        NotesApplication notesApplication = NotesApplication.getInstance();
+                        DataSourceManager sourceManager = notesApplication.getDataSourceManager();
+
+                        sourceManager.update(note);
+
+                        break;
+                }
+            }
+        });
 
         initViewPagerAppearance();
         initViewPagerAdapter();
@@ -117,10 +141,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
     }
 
     private void initViewPagerAppearance() {
-        // show previous and next pages
-
         float visiblePartMargin = getResources().getDimensionPixelSize(R.dimen.note_visible_part_margin);
-
         mViewPager.setPageMargin((int) -visiblePartMargin);
     }
 
@@ -128,11 +149,11 @@ public class MainActivity extends FragmentActivity implements EventHandler {
         NotesApplication notesApplication = NotesApplication.getInstance();
         DataSourceManager sourceManager = notesApplication.getDataSourceManager();
 
-        List<NoteModel> noteModels = sourceManager.getNoteModels();
+        List<Note> notes = sourceManager.getNotes();
 
         View.OnTouchListener onTouchListener = buildSliderTouchListener();
 
-        NotesPageAdapter pageAdapter = new NotesPageAdapter(getSupportFragmentManager(), noteModels, this,
+        NotesPageAdapter pageAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes, this,
                 onTouchListener);
 
         mViewPager.setAdapter(pageAdapter);
@@ -149,7 +170,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
                 int noteIndex = (Integer) event.getParam(Event.ACTION_KEY);
 
                 if (noteIndex == adapter.getSize() - 1) {
-                    adapter.addNote(new NoteModel());
+                    adapter.addNote(new Note());
                     adapter.notifyDataSetChanged();
                 }
 

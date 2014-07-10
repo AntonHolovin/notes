@@ -12,15 +12,15 @@ import android.widget.TextView;
 import com.golovin.notes.R;
 import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
+import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
-import com.golovin.notes.model.NoteModel;
 
 public class NoteFragment extends Fragment {
 
     public static final String NOTE_MODEL = "noteModel";
     public static final String INDEX = "index";
 
-    private NoteModel mNoteModel;
+    private Note mNote;
 
     private int mNumber;
 
@@ -35,7 +35,7 @@ public class NoteFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-        mNoteModel = (NoteModel) arguments.getSerializable(NOTE_MODEL);
+        mNote = (Note) arguments.getSerializable(NOTE_MODEL);
         mNumber = arguments.getInt(INDEX);
     }
 
@@ -53,7 +53,7 @@ public class NoteFragment extends Fragment {
     private void initContent(View view) {
         final EditText contentEditText = (EditText) view.findViewById(R.id.edit_data);
 
-        contentEditText.setText(mNoteModel.getContent());
+        contentEditText.setText(mNote.getContent());
 
         contentEditText.addTextChangedListener(new TextWatcher() {
 

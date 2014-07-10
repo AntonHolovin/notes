@@ -11,10 +11,12 @@ public class DaoGenerator {
     }
 
     private static void setup(Schema schema) {
-        Entity photos = schema.addEntity("Note");
+        Entity note = schema.addEntity("Note");
 
-        photos.addIdProperty().autoincrement().primaryKey();
-        photos.addStringProperty("content");
-        photos.addStringProperty("photoUri");
+        note.addIdProperty().autoincrement().primaryKey();
+        note.addStringProperty("content");
+        note.addStringProperty("photoUri");
+
+        note.implementsSerializable();
     }
 }

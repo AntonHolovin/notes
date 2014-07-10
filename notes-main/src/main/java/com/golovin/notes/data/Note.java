@@ -4,7 +4,7 @@ package com.golovin.notes.data;
 /**
  * Entity mapped to table NOTE.
  */
-public class Note {
+public class Note implements java.io.Serializable {
 
     private Long id;
     private String content;

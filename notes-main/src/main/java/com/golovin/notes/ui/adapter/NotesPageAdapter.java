@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
-import com.golovin.notes.model.NoteModel;
+import com.golovin.notes.data.Note;
 import com.golovin.notes.ui.fragment.NoteFragment;
 
 import java.util.ArrayList;
@@ -17,30 +17,30 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
 
     private Context mContext;
 
-    private List<NoteModel> mNoteModels = new ArrayList<NoteModel>();
+    private List<Note> mNotes = new ArrayList<Note>();
 
     private View.OnTouchListener mSliderTouchListener;
 
-    public NotesPageAdapter(FragmentManager fm, List<NoteModel> noteModels, Context context,
+    public NotesPageAdapter(FragmentManager fm, List<Note> notes, Context context,
                             View.OnTouchListener sliderTouchListener) {
         super(fm);
 
         mContext = context;
         mSliderTouchListener = sliderTouchListener;
 
-        mNoteModels = noteModels;
+        mNotes = notes;
 
-        if (mNoteModels.isEmpty()) {
-            noteModels.add(new NoteModel());
+        if (mNotes.isEmpty()) {
+            notes.add(new Note());
         }
     }
 
-    public void addNote(NoteModel noteModel) {
-        mNoteModels.add(noteModel);
+    public void addNote(Note note) {
+        mNotes.add(note);
     }
 
     public int getSize() {
-        return mNoteModels.size();
+        return mNotes.size();
     }
 
     @Override
@@ -48,18 +48,22 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         return PagerAdapter.POSITION_NONE;
     }
 
+    public Note getNoteModel(int index) {
+        return mNotes.get(index);
+    }
+
     @Override
     public Fragment getItem(int index) {
-        NoteModel noteModel = mNoteModels.get(index);
+        Note noteModel = mNotes.get(index);
 
         return buildFragment(noteModel, index);
     }
 
-    private NoteFragment buildFragment(NoteModel noteModel, int index) {
+    private NoteFragment buildFragment(Note note, int index) {
 
         Bundle bundle = new Bundle();
 
-        bundle.putSerializable(NoteFragment.NOTE_MODEL, noteModel);
+        bundle.putSerializable(NoteFragment.NOTE_MODEL, note);
         bundle.putInt(NoteFragment.INDEX, index);
 
         NoteFragment noteFragment = (NoteFragment) Fragment.instantiate(mContext, NoteFragment.class.getCanonicalName(),
@@ -72,6 +76,6 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mNoteModels.size();
+        return mNotes.size();
     }
 }
