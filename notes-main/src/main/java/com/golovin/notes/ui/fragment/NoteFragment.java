@@ -17,7 +17,7 @@ import com.golovin.notes.event.Event;
 
 public class NoteFragment extends Fragment {
 
-    public static final String NOTE_MODEL = "noteModel";
+    public static final String NOTE = "note";
     public static final String INDEX = "index";
 
     private Note mNote;
@@ -35,7 +35,7 @@ public class NoteFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-        mNote = (Note) arguments.getSerializable(NOTE_MODEL);
+        mNote = (Note) arguments.getSerializable(NOTE);
         mNumber = arguments.getInt(INDEX);
     }
 
@@ -72,6 +72,8 @@ public class NoteFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
+
+                mNote.setContent(text);
 
                 if (text.isEmpty()) {
                     mTextEmpty = true;

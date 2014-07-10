@@ -30,9 +30,7 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
 
         mNotes = notes;
 
-        if (mNotes.isEmpty()) {
-            notes.add(new Note());
-        }
+        mNotes.add(new Note());
     }
 
     public void addNote(Note note) {
@@ -63,7 +61,7 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
 
         Bundle bundle = new Bundle();
 
-        bundle.putSerializable(NoteFragment.NOTE_MODEL, note);
+        bundle.putSerializable(NoteFragment.NOTE, note);
         bundle.putInt(NoteFragment.INDEX, index);
 
         NoteFragment noteFragment = (NoteFragment) Fragment.instantiate(mContext, NoteFragment.class.getCanonicalName(),

@@ -28,6 +28,10 @@ public class DataSourceManager {
         return sInstance;
     }
 
+    public long insert(Note note) {
+        return mDaoSession.getNoteDao().insert(note);
+    }
+
     public void update(Note note) {
         mDaoSession.getNoteDao().update(note);
     }

@@ -38,32 +38,50 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         mViewPager.setOffscreenPageLimit(2);
 
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(buildViewPagerChangeListener());
 
-            int mCurrentIndex = 0;
+        initViewPagerAppearance();
+        initViewPagerAdapter();
+    }
+
+    private ViewPager.SimpleOnPageChangeListener buildViewPagerChangeListener() {
+        return new ViewPager.SimpleOnPageChangeListener() {
+
+            int mCurrentPosition = 0;
+
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentPosition = position;
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Logger.logDebug(MainActivity.class, String.format("onPageScrollStateChanged. State: %d", state));
-
                 switch (state) {
                     case ViewPager.SCROLL_STATE_DRAGGING:
 
                         NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
-                        Note note = adapter.getNoteModel(mCurrentIndex);
+                        Note note = adapter.getNoteModel(mCurrentPosition);
 
                         NotesApplication notesApplication = NotesApplication.getInstance();
                         DataSourceManager sourceManager = notesApplication.getDataSourceManager();
 
-                        sourceManager.update(note);
+                        if (note.getId() == null) {
 
+                            long id = sourceManager.insert(note);
+                            note.setId(id);
+
+                            Logger.logDebug(MainActivity.class, String.format("Inserting note, id: %d", id));
+
+                        } else {
+
+                            sourceManager.update(note);
+
+                            Logger.logDebug(MainActivity.class, String.format("Updating note, id: %d", note.getId()));
+                        }
                         break;
                 }
             }
-        });
-
-        initViewPagerAppearance();
-        initViewPagerAdapter();
+        };
     }
 
     @Override
