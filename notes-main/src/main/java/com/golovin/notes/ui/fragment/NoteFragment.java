@@ -57,8 +57,6 @@ public class NoteFragment extends Fragment {
 
         contentEditText.addTextChangedListener(new TextWatcher() {
 
-            boolean mTextEmpty = true;
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
                 // nop
@@ -71,19 +69,11 @@ public class NoteFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
 
+                String text = editable.toString();
                 mNote.setContent(text);
 
-                if (text.isEmpty()) {
-                    mTextEmpty = true;
-
-                    EventManager eventManager = NotesApplication.getInstance().getEventManager();
-
-                    eventManager.fireEvent(new Event(Event.EventType.TEXT_REMOVED));
-
-                } else if (mTextEmpty) {
-                    mTextEmpty = false;
+                if (!text.isEmpty()) {
 
                     EventManager eventManager = NotesApplication.getInstance().getEventManager();
 

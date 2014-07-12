@@ -46,7 +46,7 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         return PagerAdapter.POSITION_NONE;
     }
 
-    public Note getNoteModel(int index) {
+    public Note getNote(int index) {
         return mNotes.get(index);
     }
 
