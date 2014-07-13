@@ -14,7 +14,6 @@ import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
-import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
@@ -87,13 +86,9 @@ public class MainActivity extends FragmentActivity implements EventHandler {
             long id = sourceManager.insert(note);
             note.setId(id);
 
-            Logger.logDebug(MainActivity.class, String.format("Inserting note, id: %d", id));
-
         } else {
 
             sourceManager.update(note);
-
-            Logger.logDebug(MainActivity.class, String.format("Updating note, id: %d", note.getId()));
         }
     }
 

@@ -33,7 +33,7 @@
                 android:layout_above="@id/text_index"
                 android:layout_marginLeft="@dimen/note_data_side_margin"
                 android:layout_marginRight="@dimen/note_data_side_margin"
-                android:hint="@string/add_note"
+                android:hint="@string/hint_type_text"
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"

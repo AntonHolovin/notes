@@ -1,5 +1,6 @@
 package com.golovin.notes.ui.fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
+import com.golovin.notes.util.FontUtils;
 
 public class NoteFragment extends Fragment {
 
@@ -53,7 +55,15 @@ public class NoteFragment extends Fragment {
     private void initContent(View view) {
         final EditText contentEditText = (EditText) view.findViewById(R.id.edit_data);
 
-        contentEditText.setText(mNote.getContent());
+        String content = mNote.getContent();
+
+        contentEditText.setText(content);
+
+        FontUtils.applyFont(getActivity(), contentEditText, FontUtils.CALIBRI_FONT);
+
+        if (content == null) {
+            contentEditText.setTypeface(null, Typeface.ITALIC);
+        }
 
         contentEditText.addTextChangedListener(new TextWatcher() {
 
@@ -75,6 +85,9 @@ public class NoteFragment extends Fragment {
 
                 if (!text.isEmpty()) {
 
+                    contentEditText.setTypeface(null, Typeface.NORMAL);
+                    FontUtils.applyFont(getActivity(), contentEditText, FontUtils.CALIBRI_FONT);
+
                     EventManager eventManager = NotesApplication.getInstance().getEventManager();
 
                     Event event = new Event(Event.EventType.TEXT_ENTERED);
@@ -83,6 +96,9 @@ public class NoteFragment extends Fragment {
                     eventManager.fireEvent(event);
 
                     contentEditText.requestFocus();
+
+                } else {
+                    contentEditText.setTypeface(null, Typeface.ITALIC);
                 }
             }
         });
