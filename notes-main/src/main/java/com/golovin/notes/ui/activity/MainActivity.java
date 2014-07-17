@@ -3,10 +3,6 @@ package com.golovin.notes.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.OvershootInterpolator;
-import android.widget.RelativeLayout;
 import com.golovin.notes.R;
 import com.golovin.notes.controller.DataSourceManager;
 import com.golovin.notes.controller.EventManager;
@@ -14,9 +10,9 @@ import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
+import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
-import com.golovin.notes.ui.animation.TopMarginEvaluator;
-import com.nineoldandroids.animation.ValueAnimator;
+import com.golovin.notes.ui.listener.touch.NoteTouchListener;
 
 import java.util.List;
 
@@ -45,6 +41,54 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
     private ViewPager.SimpleOnPageChangeListener buildViewPagerChangeListener() {
         return new ViewPager.SimpleOnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
+
+                if (adapter.getSize() >= 2) {
+
+                    if (position == 0) {
+
+                        checkRightNote(position, adapter);
+
+                    } else if (position == adapter.getSize() - 1) {
+
+                        checkLeftNote(position, adapter);
+
+                    } else {
+
+                        if (position != adapter.getSize() - 2) {
+                            checkRightNote(position, adapter);
+                        }
+
+                        checkLeftNote(position, adapter);
+                    }
+                }
+            }
+
+            private void checkLeftNote(int position, NotesPageAdapter adapter) {
+                int leftPosition = position - 1;
+                checkNote(leftPosition, adapter);
+            }
+
+            private void checkRightNote(int position, NotesPageAdapter adapter) {
+                int rightPosition = position + 1;
+                checkNote(rightPosition, adapter);
+            }
+
+            private void checkNote(int position, NotesPageAdapter adapter) {
+                Note note = adapter.getNote(position);
+
+                String content = note.getContent();
+
+                if (content == null || content.isEmpty()) {
+                    adapter.removeNote(position);
+                    adapter.notifyDataSetChanged();
+
+                    Logger.logDebug(MainActivity.class, String.format("Removing %d note", position));
+                }
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -92,64 +136,6 @@ public class MainActivity extends FragmentActivity implements EventHandler {
         }
     }
 
-    private View.OnTouchListener buildSliderTouchListener() {
-        return new View.OnTouchListener() {
-            float mStartY = 0;
-
-            float mCurrentTopMargin = 0;
-
-            float mLastY = 0;
-
-            boolean mDirectionDown = false;
-
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mViewPager.getLayoutParams();
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mStartY = event.getRawY();
-                        mLastY = event.getRawY();
-                        mCurrentTopMargin = params.topMargin;
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-
-                        int sliderHalfWidth = mViewPager.findViewById(R.id.button_slider).getWidth() / 2;
-
-                        float difference = event.getRawY() - mCurrentTopMargin;
-                        params.topMargin = (int) (mCurrentTopMargin + difference - sliderHalfWidth);
-                        mViewPager.setLayoutParams(params);
-
-                        mDirectionDown = event.getRawY() > mLastY;
-
-                        mLastY = event.getRawY();
-                        break;
-
-                    case MotionEvent.ACTION_CANCEL:
-                    case MotionEvent.ACTION_UP:
-
-                        int openedMargin = getResources().getDimensionPixelSize(R.dimen.note_opened_top_margin);
-
-                        int finishMargin = mDirectionDown ? openedMargin : 0;
-
-                        int startMargin = params.topMargin;
-
-                        ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
-                                startMargin, finishMargin).setDuration(200);
-
-                        animation.setInterpolator(new OvershootInterpolator(1));
-                        animation.start();
-
-                        break;
-                }
-
-                return true;
-            }
-        };
-    }
-
     private void initViewPagerAppearance() {
         float visiblePartMargin = getResources().getDimensionPixelSize(R.dimen.note_visible_part_margin);
         mViewPager.setPageMargin((int) -visiblePartMargin);
@@ -161,10 +147,10 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         List<Note> notes = sourceManager.getNotes();
 
-        View.OnTouchListener onTouchListener = buildSliderTouchListener();
+        NoteTouchListener noteTouchListener = new NoteTouchListener(getResources(), mViewPager);
 
         NotesPageAdapter pageAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes, this,
-                onTouchListener);
+                noteTouchListener);
 
         mViewPager.setAdapter(pageAdapter);
         pageAdapter.notifyDataSetChanged();

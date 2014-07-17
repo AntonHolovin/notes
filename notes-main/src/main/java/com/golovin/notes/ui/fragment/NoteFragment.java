@@ -54,10 +54,9 @@ public class NoteFragment extends Fragment {
     private void initContent(View view) {
         final EditText contentEditText = (EditText) view.findViewById(R.id.edit_data);
 
-        contentEditText.setText(mNote.getContent());
-
         FontUtils.applyFont(getActivity(), contentEditText, FontUtils.CALIBRI_FONT);
 
+        contentEditText.setText(mNote.getContent());
         contentEditText.addTextChangedListener(new TextWatcher() {
 
             @Override

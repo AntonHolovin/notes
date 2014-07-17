@@ -33,6 +33,10 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         mNotes.add(new Note());
     }
 
+    public void removeNote(int index) {
+        mNotes.remove(index);
+    }
+
     public void addNote(Note note) {
         mNotes.add(note);
     }

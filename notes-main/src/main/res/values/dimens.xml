@@ -4,4 +4,6 @@
     <dimen name="note_vertical_padding">10dp</dimen>
     <dimen name="note_visible_part_margin">25dp</dimen>
     <dimen name="note_opened_top_margin">80dp</dimen>
+
+    <item name="note_animation_overshoot" type="dimen" format="float">1.2</item>
 </resources>
