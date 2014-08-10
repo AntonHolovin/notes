@@ -25,7 +25,12 @@ public class EventManager {
     }
 
     public void fireEvent(Event event) {
-        for (EventHandler handler : mHandlers) {
+
+        List<EventHandler> clonedHandlers = new ArrayList<EventHandler>();
+
+        clonedHandlers.addAll(mHandlers);
+
+        for (EventHandler handler : clonedHandlers) {
             handler.handlerEvent(event);
         }
     }

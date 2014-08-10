@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                     } else {
 
-                        if (position != adapter.getSize() - 2) {
+                        if (position != adapter.getSize() - 2) { // we must have last empty note
                             checkRightNote(position, adapter);
                         }
 
@@ -84,6 +84,14 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                 if (content == null || content.isEmpty()) {
                     adapter.removeNote(position);
+
+                    EventManager eventManager = NotesApplication.getInstance().getEventManager();
+
+                    Event event = new Event(Event.EventType.NOTE_REMOVED);
+                    eventManager.fireEvent(event);
+
+                    // todo: change numbers for right fragments
+
                     adapter.notifyDataSetChanged();
 
                     Logger.logDebug(MainActivity.class, String.format("Removing %d note", position));
@@ -142,8 +150,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
     }
 
     private void initViewPagerAdapter() {
-        NotesApplication notesApplication = NotesApplication.getInstance();
-        DataSourceManager sourceManager = notesApplication.getDataSourceManager();
+        DataSourceManager sourceManager = NotesApplication.getInstance().getDataSourceManager();
 
         List<Note> notes = sourceManager.getNotes();
 

@@ -21,11 +21,10 @@ public class FontUtils {
         textView.setTypeface(typeface);
     }
 
-    public static Typeface get(Context context, String name) {
+    private static Typeface get(Context context, String name) {
 
         if (!sCache.containsKey(name)) {
-            Typeface t = Typeface.createFromAsset(context.getAssets(),
-                    String.format(FONT_PATH_PATTERN, name));
+            Typeface t = Typeface.createFromAsset(context.getAssets(), String.format(FONT_PATH_PATTERN, name));
             sCache.put(name, t);
         }
 

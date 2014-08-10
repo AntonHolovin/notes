@@ -14,9 +14,10 @@ import com.golovin.notes.controller.EventManager;
 import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
+import com.golovin.notes.event.EventHandler;
 import com.golovin.notes.util.FontUtils;
 
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements EventHandler {
 
     public static final String NOTE = "note";
     public static final String INDEX = "index";
@@ -38,6 +39,22 @@ public class NoteFragment extends Fragment {
 
         mNote = (Note) arguments.getSerializable(NOTE);
         mNumber = arguments.getInt(INDEX);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventManager eventManager = NotesApplication.getInstance().getEventManager();
+        eventManager.addHandler(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        EventManager eventManager = NotesApplication.getInstance().getEventManager();
+        eventManager.removeHandler(this);
     }
 
     @Override
@@ -85,7 +102,6 @@ public class NoteFragment extends Fragment {
                     eventManager.fireEvent(event);
 
                     contentEditText.requestFocus();
-
                 }
             }
         });
@@ -104,5 +120,16 @@ public class NoteFragment extends Fragment {
 
     public void setTouchListener(View.OnTouchListener touchListener) {
         mTouchListener = touchListener;
+    }
+
+    @Override
+    public void handlerEvent(Event event) {
+        Event.EventType eventType = event.getEventType();
+
+        switch (eventType) {
+            case NOTE_REMOVED:
+
+                break;
+        }
     }
 }
