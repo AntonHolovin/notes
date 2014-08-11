@@ -39,4 +39,11 @@ public class DataSourceManager {
     public List<Note> getNotes() {
         return mDaoSession.getNoteDao().loadAll();
     }
+
+    public void removeNote(Note note) {
+
+        if (note.getId() != null) {
+            mDaoSession.getNoteDao().delete(note);
+        }
+    }
 }

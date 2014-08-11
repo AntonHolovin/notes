@@ -27,6 +27,7 @@ public class NoteFragment extends Fragment implements EventHandler {
     private int mNumber;
 
     private View.OnTouchListener mTouchListener;
+    private EditText mEditText;
 
     public NoteFragment() {
     }
@@ -69,12 +70,12 @@ public class NoteFragment extends Fragment implements EventHandler {
     }
 
     private void initContent(View view) {
-        final EditText contentEditText = (EditText) view.findViewById(R.id.edit_data);
+        mEditText = (EditText) view.findViewById(R.id.edit_data);
 
-        FontUtils.applyFont(getActivity(), contentEditText, FontUtils.CALIBRI_FONT);
+        FontUtils.applyFont(getActivity(), mEditText, FontUtils.CALIBRI_FONT);
 
-        contentEditText.setText(mNote.getContent());
-        contentEditText.addTextChangedListener(new TextWatcher() {
+        mEditText.setText(mNote.getContent());
+        mEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -90,19 +91,28 @@ public class NoteFragment extends Fragment implements EventHandler {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                mNote.setContent(text);
 
-                if (!text.isEmpty()) {
+                String oldContent = mNote.getContent();
 
-                    EventManager eventManager = NotesApplication.getInstance().getEventManager();
+                if (!text.equals(oldContent)) {
+                    mNote.setContent(text);
 
-                    Event event = new Event(Event.EventType.TEXT_ENTERED);
-                    event.putParam(Event.ACTION_KEY, mNumber);
+                    if (!text.isEmpty()) {
 
-                    eventManager.fireEvent(event);
+                        fireTextEnteredEvent();
 
-                    contentEditText.requestFocus();
+                        mEditText.requestFocus();
+                    }
                 }
+            }
+
+            private void fireTextEnteredEvent() {
+                EventManager eventManager = NotesApplication.getInstance().getEventManager();
+
+                Event event = new Event(Event.EventType.TEXT_ENTERED);
+                event.putParam(Event.ACTION_KEY, mNumber);
+
+                eventManager.fireEvent(event);
             }
         });
     }
@@ -126,8 +136,22 @@ public class NoteFragment extends Fragment implements EventHandler {
     public void handlerEvent(Event event) {
         Event.EventType eventType = event.getEventType();
 
+        Integer index = (Integer) event.getParam(Event.ACTION_KEY);
+
         switch (eventType) {
             case NOTE_REMOVED:
+
+                if (mNumber > index) {
+                    mNumber--;
+                }
+
+                break;
+
+            case NOTE_SELECTED:
+
+                if (mNumber == index) {
+                    mEditText.requestFocus();
+                }
 
                 break;
         }

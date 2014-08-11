@@ -44,13 +44,26 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
             @Override
             public void onPageSelected(int position) {
+
+                Event event = new Event(Event.EventType.NOTE_SELECTED);
+                event.putParam(Event.ACTION_KEY, position);
+
+                EventManager eventManager = NotesApplication.getInstance().getEventManager();
+                eventManager.fireEvent(event);
+
+
                 NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
 
                 if (adapter.getSize() >= 2) {
 
                     if (position == 0) {
 
-                        checkRightNote(position, adapter);
+                        Note note = adapter.getNote(position);
+                        String content = note.getContent();
+
+                        if (content.isEmpty()) {
+                            checkRightNote(position, adapter);
+                        }
 
                     } else if (position == adapter.getSize() - 1) {
 
@@ -58,7 +71,15 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                     } else {
 
-                        if (position != adapter.getSize() - 2) { // we must have last empty note
+                        Note note = adapter.getNote(position);
+                        String content = note.getContent();
+
+                        if (position != adapter.getSize() - 2) {
+
+                            checkRightNote(position, adapter);
+                            
+                        } else if (content.isEmpty()) {
+
                             checkRightNote(position, adapter);
                         }
 
@@ -83,19 +104,26 @@ public class MainActivity extends FragmentActivity implements EventHandler {
                 String content = note.getContent();
 
                 if (content == null || content.isEmpty()) {
+
                     adapter.removeNote(position);
-
-                    EventManager eventManager = NotesApplication.getInstance().getEventManager();
-
-                    Event event = new Event(Event.EventType.NOTE_REMOVED);
-                    eventManager.fireEvent(event);
-
-                    // todo: change numbers for right fragments
-
                     adapter.notifyDataSetChanged();
+
+                    DataSourceManager dataSource = NotesApplication.getInstance().getDataSourceManager();
+                    dataSource.removeNote(note);
+
+                    fireNoteRemovedEvent(position);
 
                     Logger.logDebug(MainActivity.class, String.format("Removing %d note", position));
                 }
+            }
+
+            private void fireNoteRemovedEvent(int position) {
+                EventManager eventManager = NotesApplication.getInstance().getEventManager();
+
+                Event event = new Event(Event.EventType.NOTE_REMOVED);
+                event.putParam(Event.ACTION_KEY, position);
+
+                eventManager.fireEvent(event);
             }
 
             @Override

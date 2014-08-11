@@ -17,7 +17,8 @@ public class Event {
 
     public enum EventType {
         TEXT_ENTERED,
-        NOTE_REMOVED
+        NOTE_REMOVED,
+        NOTE_SELECTED
     }
 
     public EventType getEventType() {
