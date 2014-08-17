@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.ui.fragment.NoteFragment;
@@ -22,7 +21,7 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
     private View.OnTouchListener mSliderTouchListener;
 
     public NotesPageAdapter(FragmentManager fm, List<Note> notes, Context context,
-                            View.OnTouchListener sliderTouchListener) {
+                            View.OnTouchListener sliderTouchListener, boolean addNote) {
         super(fm);
 
         mContext = context;
@@ -30,7 +29,9 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
 
         mNotes = notes;
 
-        mNotes.add(new Note());
+        if (addNote) {
+            mNotes.add(new Note());
+        }
     }
 
     public void removeNote(int index) {
@@ -45,13 +46,12 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         return mNotes.size();
     }
 
-    @Override
-    public int getItemPosition(Object object) {
-        return PagerAdapter.POSITION_NONE;
-    }
-
     public Note getNote(int index) {
         return mNotes.get(index);
+    }
+
+    public List<Note> getNotes() {
+        return mNotes;
     }
 
     @Override
@@ -59,6 +59,11 @@ public class NotesPageAdapter extends FragmentStatePagerAdapter {
         Note noteModel = mNotes.get(index);
 
         return buildFragment(noteModel, index);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     private NoteFragment buildFragment(Note note, int index) {

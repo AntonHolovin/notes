@@ -14,11 +14,14 @@ import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.listener.touch.NoteTouchListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements EventHandler {
 
     private ViewPager mViewPager;
+
+    private NoteTouchListener mNoteTouchListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,47 +48,47 @@ public class MainActivity extends FragmentActivity implements EventHandler {
             @Override
             public void onPageSelected(int position) {
 
+                fireNoteSelectedEvent(position);
+
+                NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
+
+                int size = adapter.getSize();
+
+                List<Note> notes = adapter.getNotes();
+
+                if (size > 2) {
+
+                    if (position == 0) { // first note
+
+                        checkRightNote(position, adapter);
+
+                    } else if (isNoteLast(position, adapter)) { // last note
+
+                        checkLeftNote(position, adapter);
+
+                    } else { // inner note
+
+                        checkRightNote(position, adapter);
+
+                        checkLeftNote(position, adapter);
+                    }
+                }
+            }
+
+            private boolean isNoteLast(int position, NotesPageAdapter adapter) {
+                boolean b = position == adapter.getSize() - 2 || position == adapter.getSize() - 1;
+
+                Logger.logDebug(MainActivity.class, String.format("Is note last: %b", b));
+
+                return b;
+            }
+
+            private void fireNoteSelectedEvent(int position) {
                 Event event = new Event(Event.EventType.NOTE_SELECTED);
                 event.putParam(Event.ACTION_KEY, position);
 
                 EventManager eventManager = NotesApplication.getInstance().getEventManager();
                 eventManager.fireEvent(event);
-
-
-                NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
-
-                if (adapter.getSize() >= 2) {
-
-                    if (position == 0) {
-
-                        Note note = adapter.getNote(position);
-                        String content = note.getContent();
-
-                        if (content.isEmpty()) {
-                            checkRightNote(position, adapter);
-                        }
-
-                    } else if (position == adapter.getSize() - 1) {
-
-                        checkLeftNote(position, adapter);
-
-                    } else {
-
-                        Note note = adapter.getNote(position);
-                        String content = note.getContent();
-
-                        if (position != adapter.getSize() - 2) {
-
-                            checkRightNote(position, adapter);
-                            
-                        } else if (content.isEmpty()) {
-
-                            checkRightNote(position, adapter);
-                        }
-
-                        checkLeftNote(position, adapter);
-                    }
-                }
             }
 
             private void checkLeftNote(int position, NotesPageAdapter adapter) {
@@ -100,30 +103,30 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
             private void checkNote(int position, NotesPageAdapter adapter) {
                 Note note = adapter.getNote(position);
-
                 String content = note.getContent();
 
                 if (content == null || content.isEmpty()) {
 
+                    Logger.logDebug(MainActivity.class, String.format("Note will be removed. Index = %d, " + note,
+                            position));
+
                     adapter.removeNote(position);
-                    adapter.notifyDataSetChanged();
 
                     DataSourceManager dataSource = NotesApplication.getInstance().getDataSourceManager();
                     dataSource.removeNote(note);
 
-                    fireNoteRemovedEvent(position);
+                    List<Note> notes = adapter.getNotes();
 
-                    Logger.logDebug(MainActivity.class, String.format("Removing %d note", position));
+                    Logger.logDebug(MainActivity.class, String.format("Creating new adapter with collection: " +
+                            Arrays.toString(notes.toArray())));
+
+                    NotesPageAdapter newAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes,
+                            MainActivity.this, mNoteTouchListener, false);
+
+                    mViewPager.setAdapter(newAdapter);
+
+                    newAdapter.notifyDataSetChanged();
                 }
-            }
-
-            private void fireNoteRemovedEvent(int position) {
-                EventManager eventManager = NotesApplication.getInstance().getEventManager();
-
-                Event event = new Event(Event.EventType.NOTE_REMOVED);
-                event.putParam(Event.ACTION_KEY, position);
-
-                eventManager.fireEvent(event);
             }
 
             @Override
@@ -161,14 +164,18 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         DataSourceManager sourceManager = NotesApplication.getInstance().getDataSourceManager();
 
-        if (note.getId() == null) {
+        String content = note.getContent();
 
-            long id = sourceManager.insert(note);
-            note.setId(id);
+        if (content != null && !content.isEmpty()) {
+            if (note.getId() == null) {
 
-        } else {
+                long id = sourceManager.insert(note);
+                note.setId(id);
 
-            sourceManager.update(note);
+            } else {
+
+                sourceManager.update(note);
+            }
         }
     }
 
@@ -182,10 +189,10 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         List<Note> notes = sourceManager.getNotes();
 
-        NoteTouchListener noteTouchListener = new NoteTouchListener(getResources(), mViewPager);
+        mNoteTouchListener = new NoteTouchListener(getResources(), mViewPager);
 
         NotesPageAdapter pageAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes, this,
-                noteTouchListener);
+                mNoteTouchListener, true);
 
         mViewPager.setAdapter(pageAdapter);
         pageAdapter.notifyDataSetChanged();

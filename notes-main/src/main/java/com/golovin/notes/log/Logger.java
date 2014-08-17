@@ -9,7 +9,7 @@ public class Logger {
     private static boolean DEBUG = true;
     private static boolean DEBUG_WITH_STACKTRACE = false;
 
-    public static <T> void logDebug(Class<T> cls, String message) {
+    public static <T> void logDebug(Class cls, String message) {
         if (DEBUG || DEBUG_WITH_STACKTRACE) {
             String tag = cls.getName();
             Log.d(tag, "-----");
@@ -21,7 +21,7 @@ public class Logger {
         }
     }
 
-    public static <T> void logWarning(Class<T> cls, String message) {
+    public static <T> void logWarning(Class cls, String message) {
         if (DEBUG || DEBUG_WITH_STACKTRACE) {
             String tag = cls.getName();
             Log.w(tag, "-----");
@@ -33,7 +33,7 @@ public class Logger {
         }
     }
 
-    public static <T> void logError(Class<T> cls, String message) {
+    public static <T> void logError(Class cls, String message) {
         if (DEBUG || DEBUG_WITH_STACKTRACE) {
             String tag = cls.getName();
             Log.e(tag, "-----");
@@ -45,7 +45,7 @@ public class Logger {
         }
     }
 
-    public static <T> void logError(Class<T> cls, String message, Throwable e) {
+    public static <T> void logError(Class cls, String message, Throwable e) {
         if (DEBUG || DEBUG_WITH_STACKTRACE) {
             String tag = cls.getName();
             Log.e(tag, "-----");

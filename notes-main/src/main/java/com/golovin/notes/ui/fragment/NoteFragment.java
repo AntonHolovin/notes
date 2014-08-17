@@ -15,6 +15,7 @@ import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
+import com.golovin.notes.log.Logger;
 import com.golovin.notes.util.FontUtils;
 
 public class NoteFragment extends Fragment implements EventHandler {
@@ -24,9 +25,10 @@ public class NoteFragment extends Fragment implements EventHandler {
 
     private Note mNote;
 
-    private int mNumber;
+    private int mIndex;
 
     private View.OnTouchListener mTouchListener;
+
     private EditText mEditText;
 
     public NoteFragment() {
@@ -39,7 +41,7 @@ public class NoteFragment extends Fragment implements EventHandler {
         Bundle arguments = getArguments();
 
         mNote = (Note) arguments.getSerializable(NOTE);
-        mNumber = arguments.getInt(INDEX);
+        mIndex = arguments.getInt(INDEX);
     }
 
     @Override
@@ -91,7 +93,6 @@ public class NoteFragment extends Fragment implements EventHandler {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-
                 String oldContent = mNote.getContent();
 
                 if (!text.equals(oldContent)) {
@@ -110,7 +111,7 @@ public class NoteFragment extends Fragment implements EventHandler {
                 EventManager eventManager = NotesApplication.getInstance().getEventManager();
 
                 Event event = new Event(Event.EventType.TEXT_ENTERED);
-                event.putParam(Event.ACTION_KEY, mNumber);
+                event.putParam(Event.ACTION_KEY, mIndex);
 
                 eventManager.fireEvent(event);
             }
@@ -120,7 +121,9 @@ public class NoteFragment extends Fragment implements EventHandler {
     private void initIndex(View view) {
         TextView numberTextView = (TextView) view.findViewById(R.id.text_index);
 
-        numberTextView.setText(String.valueOf(mNumber + 1));
+        int viewNumber = mIndex + 1;
+
+        numberTextView.setText(String.valueOf(viewNumber));
     }
 
     private void initSlider(View view) {
@@ -139,17 +142,11 @@ public class NoteFragment extends Fragment implements EventHandler {
         Integer index = (Integer) event.getParam(Event.ACTION_KEY);
 
         switch (eventType) {
-            case NOTE_REMOVED:
-
-                if (mNumber > index) {
-                    mNumber--;
-                }
-
-                break;
-
             case NOTE_SELECTED:
 
-                if (mNumber == index) {
+                if (mIndex == index) {
+
+                    Logger.logDebug(NoteFragment.class, String.format("Note selected. Index = %d, " + mNote, mIndex));
                     mEditText.requestFocus();
                 }
 

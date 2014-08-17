@@ -4,6 +4,7 @@ import android.content.Context;
 import com.golovin.notes.data.DaoMaster;
 import com.golovin.notes.data.DaoSession;
 import com.golovin.notes.data.Note;
+import com.golovin.notes.log.Logger;
 
 import java.util.List;
 
@@ -44,6 +45,9 @@ public class DataSourceManager {
 
         if (note.getId() != null) {
             mDaoSession.getNoteDao().delete(note);
+
+            Logger.logDebug(DataSourceManager.class, String.format("Note removed from DataSource. Id = %d",
+                    note.getId()));
         }
     }
 }
