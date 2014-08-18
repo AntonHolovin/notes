@@ -14,7 +14,6 @@ import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.listener.touch.NoteTouchListener;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements EventHandler {
@@ -54,8 +53,6 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                 int size = adapter.getSize();
 
-                List<Note> notes = adapter.getNotes();
-
                 if (size > 2) {
 
                     if (position == 0) { // first note
@@ -93,15 +90,15 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
             private void checkLeftNote(int position, NotesPageAdapter adapter) {
                 int leftPosition = position - 1;
-                checkNote(leftPosition, adapter);
+                checkNote(leftPosition, adapter, false);
             }
 
             private void checkRightNote(int position, NotesPageAdapter adapter) {
                 int rightPosition = position + 1;
-                checkNote(rightPosition, adapter);
+                checkNote(rightPosition, adapter, true);
             }
 
-            private void checkNote(int position, NotesPageAdapter adapter) {
+            private void checkNote(int position, NotesPageAdapter adapter, boolean isRight) {
                 Note note = adapter.getNote(position);
                 String content = note.getContent();
 
@@ -117,15 +114,15 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                     List<Note> notes = adapter.getNotes();
 
-                    Logger.logDebug(MainActivity.class, String.format("Creating new adapter with collection: " +
-                            Arrays.toString(notes.toArray())));
-
                     NotesPageAdapter newAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes,
                             MainActivity.this, mNoteTouchListener, false);
 
                     mViewPager.setAdapter(newAdapter);
 
                     newAdapter.notifyDataSetChanged();
+
+                    int movePosition = isRight ? position - 1 : position;
+                    mViewPager.setCurrentItem(movePosition, false);
                 }
             }
 

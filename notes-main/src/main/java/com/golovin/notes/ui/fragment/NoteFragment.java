@@ -95,14 +95,19 @@ public class NoteFragment extends Fragment implements EventHandler {
                 String text = editable.toString();
                 String oldContent = mNote.getContent();
 
+
                 if (!text.equals(oldContent)) {
+
+                    Logger.logDebug(NoteFragment.class, String.format(
+                            "Text changed, index = %d, note = %s, new text = '%s'", mIndex, mNote, text));
+
                     mNote.setContent(text);
 
                     if (!text.isEmpty()) {
 
                         fireTextEnteredEvent();
 
-                        mEditText.requestFocus();
+//                        requestFocus();
                     }
                 }
             }
@@ -147,10 +152,17 @@ public class NoteFragment extends Fragment implements EventHandler {
                 if (mIndex == index) {
 
                     Logger.logDebug(NoteFragment.class, String.format("Note selected. Index = %d, " + mNote, mIndex));
-                    mEditText.requestFocus();
+
+                    requestFocus();
                 }
 
                 break;
         }
+    }
+
+    private void requestFocus() {
+
+        mEditText.requestFocus();
+        mEditText.setSelection(mEditText.getText().length());
     }
 }
