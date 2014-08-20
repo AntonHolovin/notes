@@ -9,10 +9,10 @@
             android:id="@+id/button_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@android:color/transparent"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/button_share_background"
             android:text="@string/share"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="20sp"
             android:layout_centerHorizontal="true"/>
 

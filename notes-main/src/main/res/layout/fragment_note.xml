@@ -8,14 +8,14 @@
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/note_background">
+                    android:background="@drawable/background_note">
 
         <Button
                 android:id="@+id/button_slider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/slide_background"/>
+                android:background="@drawable/background_slide"/>
 
         <TextView
                 android:id="@+id/text_index"
