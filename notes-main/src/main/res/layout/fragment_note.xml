@@ -31,12 +31,16 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/button_slider"
                 android:layout_above="@id/text_index"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_marginLeft="@dimen/note_data_side_margin"
                 android:layout_marginRight="@dimen/note_data_side_margin"
                 android:hint="@string/hint_type_text"
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"
-                android:background="@null"/>
+                android:background="@null">
+            <requestFocus/>
+        </EditText>
     </RelativeLayout>
 </FrameLayout>
