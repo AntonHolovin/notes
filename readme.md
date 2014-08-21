@@ -2,7 +2,9 @@
 
 Simple notes app for android.
 
-![](screenshot.png) ![](screenshot1.png)
+![](screenshot.png)     
+
+![](screenshot1.png)
 
 Frameworks
 ---
