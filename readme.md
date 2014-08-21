@@ -1,17 +1,32 @@
 # Notes #
 
-Simple notes implementation for android. It's test task for one firm.
+Simple notes app for android.
 
-![](screenshot.png)
+![](screenshot.png) ![](screenshot1.png)
 
-Features:
+Frameworks
 ---
-- minimum android verion is 2.3.7. It will be corrected;
-- app requires virtual keyboard (new note will be added if you will type some text and press back button);
-- app uses sqlite. Very simple implementation;
-- nineoldandroids library;
-- gradle.
+- greenDAO;
+- nineoldandroids.
 
-Created by:
---- 
-Anton Golovin.
+Developed By
+---
+
+Anton Golovin - <antnglvn@gmail.com>
+
+License
+---
+
+    Copyright 2014 Anton Golovin
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
