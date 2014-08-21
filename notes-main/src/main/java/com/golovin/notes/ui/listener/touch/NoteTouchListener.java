@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 import com.golovin.notes.R;
+import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
+
+import java.util.Calendar;
 
 
 public class NoteTouchListener implements View.OnTouchListener {
@@ -22,7 +25,13 @@ public class NoteTouchListener implements View.OnTouchListener {
 
     private float mLastY;
 
-    private boolean mDirectionDown = false;
+    private boolean mIsGoingDown;
+
+    private boolean mIsOpened;
+
+    private long mStartClickTime;
+
+    final int MAX_CLICK_DURATION = 200;
 
     public NoteTouchListener(Resources resources, ViewPager viewPager) {
         mResources = resources;
@@ -38,6 +47,7 @@ public class NoteTouchListener implements View.OnTouchListener {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mTouchDiff = (int) (rawY - params.topMargin);
+                mStartClickTime = Calendar.getInstance().getTimeInMillis();
 
                 mLastY = rawY;
                 break;
@@ -48,7 +58,7 @@ public class NoteTouchListener implements View.OnTouchListener {
 
                 mViewPager.setLayoutParams(params);
 
-                mDirectionDown = rawY > mLastY;
+                mIsGoingDown = rawY > mLastY;
 
                 mLastY = rawY;
                 break;
@@ -56,21 +66,43 @@ public class NoteTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
 
-                int openedMargin = mResources.getDimensionPixelSize(R.dimen.note_opened_top_margin);
-
-                int finishMargin = mDirectionDown ? openedMargin : 0;
-
+                int duration = mResources.getInteger(R.integer.note_animation_swipe_duration);
                 int startMargin = params.topMargin;
 
-                int duration = mResources.getInteger(R.integer.note_animation_swipe_duration);
+                int openedMargin = mResources.getDimensionPixelSize(R.dimen.note_opened_top_margin);
 
-                ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
-                        startMargin, finishMargin).setDuration(duration);
+                long clickDuration = Calendar.getInstance().getTimeInMillis() - mStartClickTime;
 
-                float overshoot = getAnimationOvershootValue();
+                if (clickDuration < MAX_CLICK_DURATION) { // click event
 
-                animation.setInterpolator(new OvershootInterpolator(overshoot));
-                animation.start();
+                    Logger.logDebug(NoteTouchListener.class, String.format("Click event. Is opened: %b", mIsOpened));
+
+                    int finishMargin = !mIsOpened ? openedMargin : 0;
+
+                    ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
+                            startMargin, finishMargin).setDuration(duration);
+
+                    float overshoot = getAnimationOvershootValue();
+
+                    animation.setInterpolator(new OvershootInterpolator(overshoot));
+                    animation.start();
+
+                    mIsOpened = !mIsOpened;
+
+                } else {
+
+                    int finishMargin = mIsGoingDown ? openedMargin : 0;
+
+                    ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
+                            startMargin, finishMargin).setDuration(duration);
+
+                    float overshoot = getAnimationOvershootValue();
+
+                    animation.setInterpolator(new OvershootInterpolator(overshoot));
+                    animation.start();
+
+                    mIsOpened = mIsGoingDown;
+                }
 
                 break;
         }
