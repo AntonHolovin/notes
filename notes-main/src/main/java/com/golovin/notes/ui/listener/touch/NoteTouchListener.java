@@ -18,9 +18,9 @@ public class NoteTouchListener implements View.OnTouchListener {
 
     private Resources mResources;
 
-    private float mCurrentTopMargin = 0;
+    private int mTouchDiff;
 
-    private float mLastY = 0;
+    private float mLastY;
 
     private boolean mDirectionDown = false;
 
@@ -33,23 +33,24 @@ public class NoteTouchListener implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent event) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mViewPager.getLayoutParams();
 
+        float rawY = event.getRawY();
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mLastY = event.getRawY();
-                mCurrentTopMargin = params.topMargin;
+                mTouchDiff = (int) (rawY - params.topMargin);
+
+                mLastY = rawY;
                 break;
 
             case MotionEvent.ACTION_MOVE:
 
-                int sliderHalfWidth = mViewPager.findViewById(R.id.button_slider).getWidth() / 2;
+                params.topMargin = (int) rawY - mTouchDiff;
 
-                float difference = event.getRawY() - mCurrentTopMargin;
-                params.topMargin = (int) (mCurrentTopMargin + difference - sliderHalfWidth);
                 mViewPager.setLayoutParams(params);
 
-                mDirectionDown = event.getRawY() > mLastY;
+                mDirectionDown = rawY > mLastY;
 
-                mLastY = event.getRawY();
+                mLastY = rawY;
                 break;
 
             case MotionEvent.ACTION_CANCEL:

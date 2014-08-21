@@ -73,11 +73,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
             }
 
             private boolean isNoteLast(int position, NotesPageAdapter adapter) {
-                boolean b = position == adapter.getSize() - 2 || position == adapter.getSize() - 1;
-
-                Logger.logDebug(MainActivity.class, String.format("Is note last: %b", b));
-
-                return b;
+                return position == adapter.getSize() - 2 || position == adapter.getSize() - 1;
             }
 
             private void fireNoteSelectedEvent(int position) {
