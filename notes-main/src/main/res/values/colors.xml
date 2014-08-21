@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="app_background">#2e2e2e</color>
+    <color name="button_share_pressed">#DEDBD9</color>
+    <color name="button_share_normal">@android:color/white</color>
 </resources>

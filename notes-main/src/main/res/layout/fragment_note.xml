@@ -8,14 +8,14 @@
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/note_background">
+                    android:background="@drawable/background_note">
 
         <Button
                 android:id="@+id/button_slider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/slide_background"/>
+                android:background="@drawable/background_slide"/>
 
         <TextView
                 android:id="@+id/text_index"
@@ -24,19 +24,23 @@
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"/>
 
-        <com.notes.controls.CustomEditText
+        <EditText
                 android:id="@+id/edit_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/button_slider"
                 android:layout_above="@id/text_index"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_marginLeft="@dimen/note_data_side_margin"
                 android:layout_marginRight="@dimen/note_data_side_margin"
-                android:hint="@string/add_note"
+                android:hint="@string/hint_type_text"
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"
-                android:background="@null"/>
+                android:background="@null">
+            <requestFocus/>
+        </EditText>
     </RelativeLayout>
 </FrameLayout>
