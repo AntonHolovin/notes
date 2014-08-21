@@ -1,15 +1,16 @@
-package com.golovin.notes.util;
+package com.golovin.notes.helper;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class FontUtils {
+public class FontHelper {
 
-    public static final String CALIBRI_FONT = "calibri";
+    public static final String FONT_ROBOTO_CONDENSED_REGULAR = "RobotoCondensed-Regular";
 
     private static final String FONT_PATH_PATTERN = "fonts/%s.ttf";
 
@@ -19,6 +20,12 @@ public class FontUtils {
         Typeface typeface = get(context, fontName);
 
         textView.setTypeface(typeface);
+    }
+
+    public static void applyFont(Context context, Button button, String fontName) {
+        Typeface typeface = get(context, fontName);
+
+        button.setTypeface(typeface);
     }
 
     private static Typeface get(Context context, String name) {

@@ -3,6 +3,8 @@ package com.golovin.notes.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.Button;
 import com.golovin.notes.R;
 import com.golovin.notes.controller.DataSourceManager;
 import com.golovin.notes.controller.EventManager;
@@ -10,6 +12,8 @@ import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
+import com.golovin.notes.helper.FontHelper;
+import com.golovin.notes.helper.ShareHelper;
 import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.listener.touch.NoteTouchListener;
@@ -27,7 +31,25 @@ public class MainActivity extends FragmentActivity implements EventHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initShareButton();
         initNotesViewPager();
+    }
+
+    private void initShareButton() {
+        Button shareButton = (Button) findViewById(R.id.button_share);
+        FontHelper.applyFont(this, shareButton, FontHelper.FONT_ROBOTO_CONDENSED_REGULAR);
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int currentItem = mViewPager.getCurrentItem();
+
+                NotesPageAdapter adapter = (NotesPageAdapter) mViewPager.getAdapter();
+                Note note = adapter.getNote(currentItem);
+
+                ShareHelper.byEmail(MainActivity.this, note.getContent());
+            }
+        });
     }
 
     private void initNotesViewPager() {

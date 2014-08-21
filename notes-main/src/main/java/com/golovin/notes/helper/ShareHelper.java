@@ -1,10 +1,10 @@
-package com.golovin.notes.util;
+package com.golovin.notes.helper;
 
 import android.content.Context;
 import android.content.Intent;
 import com.golovin.notes.R;
 
-public class ShareUtils {
+public class ShareHelper {
     public static void byEmail(Context context, String text) {
         Intent intent = new Intent();
 

@@ -15,8 +15,8 @@ import com.golovin.notes.controller.NotesApplication;
 import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
+import com.golovin.notes.helper.FontHelper;
 import com.golovin.notes.log.Logger;
-import com.golovin.notes.util.FontUtils;
 
 public class NoteFragment extends Fragment implements EventHandler {
 
@@ -74,7 +74,7 @@ public class NoteFragment extends Fragment implements EventHandler {
     private void initContent(View view) {
         mEditText = (EditText) view.findViewById(R.id.edit_data);
 
-        FontUtils.applyFont(getActivity(), mEditText, FontUtils.CALIBRI_FONT);
+        FontHelper.applyFont(getActivity(), mEditText, FontHelper.FONT_ROBOTO_CONDENSED_REGULAR);
 
         mEditText.setText(mNote.getContent());
         mEditText.addTextChangedListener(new TextWatcher() {

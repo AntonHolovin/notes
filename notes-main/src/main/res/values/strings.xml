@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">Notes</string>
     <string name="hint_type_text">Type some text..</string>
-    <string name="share">Share</string>
+    <string name="share">SHARE</string>
 </resources>
