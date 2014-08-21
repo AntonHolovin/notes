@@ -1,5 +1,6 @@
 package com.golovin.notes.ui.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class MainActivity extends FragmentActivity implements EventHandler {
 
+    public static final String SAVED_POSITION = "savedPosition";
     private ViewPager mViewPager;
 
     private NoteTouchListener mNoteTouchListener;
@@ -33,6 +35,14 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         initShareButton();
         initNotesViewPager();
+        restoreViewPagerPosition();
+    }
+
+    private void restoreViewPagerPosition() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        int savedPosition = preferences.getInt(SAVED_POSITION, 0);
+
+        mViewPager.setCurrentItem(savedPosition);
     }
 
     private void initShareButton() {
@@ -168,9 +178,18 @@ public class MainActivity extends FragmentActivity implements EventHandler {
         super.onPause();
 
         saveCurrentNote();
+        saveCurrentPosition();
 
         EventManager eventManager = NotesApplication.getInstance().getEventManager();
         eventManager.removeHandler(this);
+    }
+
+    private void saveCurrentPosition() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+
+        edit.putInt(SAVED_POSITION, mViewPager.getCurrentItem());
+        edit.commit();
     }
 
     private void saveCurrentNote() {
