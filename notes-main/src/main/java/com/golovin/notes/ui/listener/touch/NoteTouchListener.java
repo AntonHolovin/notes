@@ -8,14 +8,16 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 import com.golovin.notes.R;
-import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.animation.TopMarginEvaluator;
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.Calendar;
 
 
 public class NoteTouchListener implements View.OnTouchListener {
+
+    private View mShareButton;
 
     private ViewPager mViewPager;
 
@@ -33,9 +35,10 @@ public class NoteTouchListener implements View.OnTouchListener {
 
     final int MAX_CLICK_DURATION = 200;
 
-    public NoteTouchListener(Resources resources, ViewPager viewPager) {
+    public NoteTouchListener(Resources resources, ViewPager viewPager, View shareButton) {
         mResources = resources;
         mViewPager = viewPager;
+        mShareButton = shareButton;
     }
 
     @Override
@@ -50,6 +53,11 @@ public class NoteTouchListener implements View.OnTouchListener {
                 mStartClickTime = Calendar.getInstance().getTimeInMillis();
 
                 mLastY = rawY;
+
+                if (!mIsOpened) {
+                    mShareButton.setVisibility(View.VISIBLE);
+                }
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -75,33 +83,19 @@ public class NoteTouchListener implements View.OnTouchListener {
 
                 if (clickDuration < MAX_CLICK_DURATION) { // click event
 
-                    Logger.logDebug(NoteTouchListener.class, String.format("Click event. Is opened: %b", mIsOpened));
-
                     int finishMargin = !mIsOpened ? openedMargin : 0;
 
-                    ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
-                            startMargin, finishMargin).setDuration(duration);
-
-                    float overshoot = getAnimationOvershootValue();
-
-                    animation.setInterpolator(new OvershootInterpolator(overshoot));
-                    animation.start();
-
                     mIsOpened = !mIsOpened;
+
+                    animate(duration, startMargin, finishMargin);
 
                 } else {
 
                     int finishMargin = mIsGoingDown ? openedMargin : 0;
 
-                    ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
-                            startMargin, finishMargin).setDuration(duration);
-
-                    float overshoot = getAnimationOvershootValue();
-
-                    animation.setInterpolator(new OvershootInterpolator(overshoot));
-                    animation.start();
-
                     mIsOpened = mIsGoingDown;
+
+                    animate(duration, startMargin, finishMargin);
                 }
 
                 break;
@@ -110,9 +104,51 @@ public class NoteTouchListener implements View.OnTouchListener {
         return true;
     }
 
+    private void changeButtonVisibility() {
+        int visibility = mIsOpened ? View.VISIBLE : View.GONE;
+
+        mShareButton.setVisibility(visibility);
+    }
+
+    private void animate(int duration, int startMargin, int finishMargin) {
+        ValueAnimator animation = ValueAnimator.ofObject(new TopMarginEvaluator(mViewPager),
+                startMargin, finishMargin).setDuration(duration);
+
+        float overshoot = getAnimationOvershootValue();
+
+        animation.setInterpolator(new OvershootInterpolator(overshoot));
+        animation.addListener(new AnimatorListener());
+        animation.start();
+    }
+
     private float getAnimationOvershootValue() {
         TypedValue outValue = new TypedValue();
         mResources.getValue(R.dimen.note_animation_overshoot, outValue, true);
         return outValue.getFloat();
+    }
+
+    private class AnimatorListener implements Animator.AnimatorListener {
+
+        @Override
+        public void onAnimationStart(Animator animator) {
+            // nop
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animator) {
+            if (!mIsOpened) {
+                changeButtonVisibility();
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animator) {
+            // nop
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animator) {
+            // nop
+        }
     }
 }

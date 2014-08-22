@@ -16,7 +16,6 @@ import com.golovin.notes.data.Note;
 import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
 import com.golovin.notes.helper.FontHelper;
-import com.golovin.notes.log.Logger;
 
 public class NoteFragment extends Fragment implements EventHandler {
 
@@ -91,16 +90,11 @@ public class NoteFragment extends Fragment implements EventHandler {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
                 String text = editable.toString();
+
                 String oldContent = mNote.getContent();
 
-
                 if (!text.equals(oldContent)) {
-
-                    Logger.logDebug(NoteFragment.class, String.format(
-                            "Text changed. index = %d, note = %s, new text = '%s'", mIndex, mNote, text));
-
                     mNote.setContent(text);
 
                     if (!text.isEmpty()) {
@@ -150,9 +144,6 @@ public class NoteFragment extends Fragment implements EventHandler {
             case NOTE_SELECTED:
 
                 if (mIndex == index) {
-
-                    Logger.logDebug(NoteFragment.class, String.format("Note selected. Index = %d, " + mNote, mIndex));
-
                     requestFocus();
                 }
 
@@ -161,9 +152,6 @@ public class NoteFragment extends Fragment implements EventHandler {
     }
 
     private void requestFocus() {
-
-        Logger.logDebug(NoteFragment.class, String.format("Focus was requested. Index: %d, note: %s", mIndex, mNote));
-
         mEditText.requestFocus();
         mEditText.setSelection(mEditText.getText().length());
     }

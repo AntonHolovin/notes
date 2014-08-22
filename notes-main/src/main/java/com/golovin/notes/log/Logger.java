@@ -7,7 +7,7 @@ import java.io.StringWriter;
 
 public class Logger {
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 
     private static boolean DEBUG_WITH_STACKTRACE = false;
 

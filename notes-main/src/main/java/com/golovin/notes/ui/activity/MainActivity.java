@@ -15,7 +15,6 @@ import com.golovin.notes.event.Event;
 import com.golovin.notes.event.EventHandler;
 import com.golovin.notes.helper.FontHelper;
 import com.golovin.notes.helper.ShareHelper;
-import com.golovin.notes.log.Logger;
 import com.golovin.notes.ui.adapter.NotesPageAdapter;
 import com.golovin.notes.ui.listener.touch.NoteTouchListener;
 
@@ -132,9 +131,6 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
                 if (content == null || content.isEmpty()) {
 
-                    Logger.logDebug(MainActivity.class, String.format("Note will be removed. Index = %d, " + note,
-                            position));
-
                     adapter.removeNote(position);
 
                     DataSourceManager dataSource = NotesApplication.getInstance().getDataSourceManager();
@@ -223,7 +219,7 @@ public class MainActivity extends FragmentActivity implements EventHandler {
 
         List<Note> notes = sourceManager.getNotes();
 
-        mNoteTouchListener = new NoteTouchListener(getResources(), mViewPager);
+        mNoteTouchListener = new NoteTouchListener(getResources(), mViewPager, findViewById(R.id.button_share));
 
         NotesPageAdapter pageAdapter = new NotesPageAdapter(getSupportFragmentManager(), notes, this,
                 mNoteTouchListener, true);
